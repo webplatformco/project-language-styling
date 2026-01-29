@@ -10,8 +10,10 @@ export default async function () {
     type: "text",
   })
   .then(response => {
-    const decoder = new TextDecoder('utf-8'); 
-    return decoder.decode(response);
+    if (typeof response !== 'string') {
+      const decoder = new TextDecoder('utf-8'); 
+      return decoder.decode(response);
+    } else return response;
   })
   .catch(error => {
     console.error('There has been a problem with your fetch operation:', error);

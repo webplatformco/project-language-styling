@@ -1,0 +1,22 @@
+{
+  "name": "language-subtag-registry",
+  "version": "1.0.0",
+  "description": "IANA Language Subtag Registry viewer built with 11ty",
+  "scripts": {
+    "build": "eleventy",
+    "start": "eleventy --serve",
+    "fetch-data": "node scripts/fetch-data.js"
+  },
+  "keywords": [
+    "iana",
+    "language",
+    "subtag",
+    "registry",
+    "11ty"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}

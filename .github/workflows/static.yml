@@ -29,12 +29,27 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Build
-        uses: TartanLlama/actions-eleventy@v1.3
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use Node LTS version
+        uses: actions/setup-node@v6
         with:
-          install_dependencies: true
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          cache: yarn
+          node-version: 24
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Validate build
+        run: yarn build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          publish_dir: _site 
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}

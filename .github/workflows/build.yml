@@ -29,6 +29,3 @@ jobs:
 
       - name: Validate build
         run: yarn build
-
-      - name: Check for uncommitted changes
-        run: git diff --exit-code

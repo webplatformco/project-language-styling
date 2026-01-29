@@ -128,6 +128,7 @@ description: "This is a list of all the language subtags in the IANA Language Su
             label: 'Subtag',
             dataField: 'subtag',
             dataType: 'string',
+            unique: true,
             sortDirection: 'asc',
             formatFunction(settings) {
               settings.template = `<a href="https://www.iana.org/assignments/language-subtag-registry/${settings.value}">${settings.value}</a>`;

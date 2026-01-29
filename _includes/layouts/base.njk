@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if description %}<meta name="description" content="{{ description }}">{% endif %}
+    {% if author %}<meta name="author" content="{{ author }}">{% endif %}
+    {% if tags %}<meta name="keywords" content="{{ tags | join(', ') }}">{% endif %}
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    <meta name="yandexbot" content="index, follow">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ '/main.css' | url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/patternfly/patternfly.css' | url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/patternfly/patternfly-addons.css' | url }}">
+    
+    {% getBundle "fontawesome" %}
+</head>
+<body>
+    <main>{{ content | safe }}</main>
+</body>
+</html>

@@ -1,25 +1,26 @@
-const fs = require('fs');
-const path = require('path');
+import Fetch from "@11ty/eleventy-fetch";
 
 const REGISTRY_URL = 'https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry';
+const RECORD_SEPARATOR = '%%';
 
-async function fetchAndParseRegistry() {
-  console.log('Fetching IANA Language Subtag Registry...');
-
-  const response = await fetch(REGISTRY_URL);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch registry: ${response.status} ${response.statusText}`);
-  }
-
-  const text = await response.text();
-  console.log(`Fetched ${text.length} bytes`);
+/** @type {import('@11ty/eleventy')} */
+export default async function () {
+  const result = await Fetch(REGISTRY_URL, {
+    duration: "1y", // save for 1 year
+    type: "text",
+  })
+  .then(response => {
+    const decoder = new TextDecoder('utf-8'); 
+    return decoder.decode(response);
+  })
+  .catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+  });
 
   // Split by record separator
-  const records = text.split('%%').map(r => r.trim()).filter(r => r.length > 0);
-  console.log(`Found ${records.length} records`);
+  const records = result?.split(RECORD_SEPARATOR).map(r => r.trim()).filter(r => r.length > 0);
 
   const entries = [];
-
   for (const record of records) {
     const lines = record.split('\n');
     const entry = {};
@@ -59,15 +60,5 @@ async function fetchAndParseRegistry() {
     }
   }
 
-  console.log(`Parsed ${entries.length} valid entries`);
-
-  // Write to data file
-  const outputPath = path.join(__dirname, '..', 'src', '_data', 'subtags.json');
-  fs.writeFileSync(outputPath, JSON.stringify(entries, null, 2));
-  console.log(`Written to ${outputPath}`);
-}
-
-fetchAndParseRegistry().catch(err => {
-  console.error('Error:', err);
-  process.exit(1);
-});
+	return entries ?? [];
+};

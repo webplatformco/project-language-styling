@@ -1,85 +1,200 @@
 ---
 title: IANA Language Subtag Registry
+layout: base.njk
+description: "This is a list of all the language subtags in the IANA Language Subtag Registry. The goal of this page is to collect data on the best practices for styling these subtags in order to find relationships between languages for different use cases."
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }}</title>
-  <style>
-    * {
-      box-sizing: border-box;
+
+<script type="module" src="smart-webcomponents/modules/smart.table.js"></script>
+<link rel="stylesheet" type="text/css" href="smart-webcomponents/styles/smart.default.css" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+  #table {
+    max-block-size: max(80vh, 500px);
+    overflow: auto;
+  }
+
+  .pf-v6-c-input-group {
+    margin-block: 1rem;
+    gap: 1px;
+  }
+
+  .pf-v6-c-form-control:has(#exportOptions) {
+    &::before, &::after {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
     }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #f5f5f5;
+
+    .pf-v6-c-form-control__utilities {
+      align-self: center;
+      padding-block: 0;
+      justify-self: 0;
+      transform: scale(.8);
     }
-    h1 {
-      margin-bottom: 20px;
+  }
+
+  #exportSubmit {
+    align-self: stretch;
+    align-items: center;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: var(--pf-t--global--border--radius--small);
+    border-bottom-right-radius: var(--pf-t--global--border--radius--small);
+  }
+</style>
+
+<h1 class="pf-v6-c-content--h1 pf-m-page-title">{{ title }}</h1>
+<p class="pf-v6-c-content--p">This is a list of all the language subtags in the IANA Language Subtag Registry. The goal of this page is to collect data on the best practices for styling these subtags in order to find relationships between languages for different use cases.</p>
+
+<form class="pf-v6-c-input-group" id="exportForm">
+  <span class="pf-v6-c-input-group__item pf-m-control">
+    <span class="pf-v6-c-form-control">
+      <select id="exportOptions">
+        <option value="csv" selected>Export as CSV</option>
+        <option value="html">Export as HTML</option>
+        <option value="json">Export as JSON</option>
+        <option value="pdf">Export as PDF</option>
+        <option value="xlsx">Export as XLSX</option>
+        <option value="xml">Export as XML</option>
+      </select>
+      <span class="pf-v6-c-form-control__utilities">
+        <span class="pf-v6-c-form-control__toggle-icon pf-v6-c-icon pf-m-small">
+          <i class="fas fa-angle-down" aria-hidden="true"></i>
+        </span>
+      </span>
+    </span>
+  </span>
+  <span class="pf-v6-c-input-group__item pf-m-control">
+    <button class="pf-v6-c-button pf-m-primary" id="exportSubmit" aria-label="Export data as selected format">
+      <span class="pf-v6-c-button__icon pf-v6-c-icon">
+        <i class="fas fa-download" aria-hidden="true"></i>
+      </span>
+    </button>
+  </span>
+</form>
+
+<div class="table-container">
+  <smart-table id="table" class="table-responsive pf-v6-c-table" column-menu filtering sortable></smart-table>
+</div>
+
+<script type="module">
+  const subtags = {{ subtags | json: 2 | raw }};
+
+  const getColorForType = (type) => {
+    switch (type) {
+      case 'language':
+        return 'blue';
+      case 'script':
+        return 'yellow';
+      case 'region':
+        return 'orange';
+      case 'variant':
+        return 'purple';
+      case 'extlang':
+        return 'teal';
+      case 'grandfathered':
+        return 'gray';
     }
-    .table-container {
-      overflow-x: auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  window.Smart('#table', class {
+    get properties() {
+      return {
+        dataSource: new window.Smart.DataAdapter({
+            dataSource: subtags,
+            keyDataField: 'subtag',
+            parentDataField: 'type',
+            dataFields: [
+              'type: string',
+              'subtag: string',
+              'description: string',
+              'styles: string'
+            ]
+        }),
+        keyboardNavigation: true,
+        freezeHeader: true,
+        filterRow: true,
+        columns: [
+          {
+            label: 'Type',
+            dataField: 'type',
+            dataType: 'string',
+            sortDirection: 'asc',
+            formatFunction(settings) {
+              settings.template = `<span class="pf-v6-c-label pf-m-filled pf-m-clickable pf-m-${getColorForType(settings.value)}"><a class="pf-v6-c-label__content pf-m-clickable" href="#" data-filter="${settings.value}"><span class="pf-v6-c-label__text">${settings.value}</span></a></span>`;
+            }
+          },
+          {
+            label: 'Subtag',
+            dataField: 'subtag',
+            dataType: 'string',
+            sortDirection: 'asc',
+            formatFunction(settings) {
+              settings.template = `<a href="https://www.iana.org/assignments/language-subtag-registry/${settings.value}">${settings.value}</a>`;
+            }
+          },
+          {
+            label: 'Description',
+            dataField: 'description',
+            dataType: 'string',
+            allowEdit: false,
+            allowSorting: false,
+            allowFiltering: false,
+            allowMenu: false,
+          },
+          {
+            label: 'Commonly applied styles',
+            dataField: 'styles',
+            dataType: 'string',
+            allowSorting: false,
+            formatFunction(settings) {
+              settings.template = `<a href="https://www.iana.org/assignments/language-subtag-registry/${settings.value}">${settings.value}</a>`;
+            }
+          }
+        ],
+      };
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 600px;
-    }
-    th, td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    th {
-      background-color: #f8f9fa;
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-    }
-    tr:hover {
-      background-color: #f5f5f5;
-    }
-    .type-language { color: #1976d2; }
-    .type-script { color: #388e3c; }
-    .type-region { color: #f57c00; }
-    .type-variant { color: #7b1fa2; }
-    .type-extlang { color: #c62828; }
-    .type-grandfathered { color: #455a64; }
-    .type-redundant { color: #795548; }
-    .count {
-      margin-bottom: 16px;
-      color: #666;
-    }
-  </style>
-</head>
-<body>
-  <h1>{{ title }}</h1>
-  <p class="count">Total entries: {{ subtags.length }}</p>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Subtag</th>
-          <th>Description</th>
-          <th>Type</th>
-        </tr>
-      </thead>
-      <tbody>
-        {%- for item in subtags %}
-        <tr>
-          <td><code>{{ item.subtag }}</code></td>
-          <td>{{ item.description }}</td>
-          <td class="type-{{ item.type | downcase }}">{{ item.type }}</td>
-        </tr>
-        {%- endfor %}
-      </tbody>
-    </table>
-  </div>
-</body>
-</html>
+  });
+
+  window.onload = function () {
+    const table = document.getElementById('table');
+
+    // Set up the export dropdown and the export button to export the table data
+    const exportDropdown = document.getElementById('exportOptions');
+    const exportButton = document.getElementById('exportSubmit');
+
+    exportDropdown.addEventListener('change', (event) => {
+      const value = event.target.value;
+      if (value) {
+        exportButton.disabled = false;
+        exportButton.textContent = `Export as ${value}`;
+      } else {
+        exportButton.disabled = true;
+        exportButton.textContent = 'Export data as selected format';
+      }
+    });
+
+    exportButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      table.exportData(exportDropdown.value, 'table');
+    });
+
+    const validFilters = [...new Set([...subtags].map((subtag) => {
+      return subtag.type;
+    }))];
+
+    document.querySelectorAll('a.pf-m-clickable[href="#"]').forEach(anchor => {
+      anchor.addEventListener('click', (event) => {
+        event.preventDefault();
+        const target = event.target.closest('a');
+        const filter = target.dataset.filter;
+        
+        // Check that the filter is valid
+        if (!filter || !validFilters.includes(filter)) return;
+
+        table.addFilter(['type', `= "${filter}"`]);
+        table.refresh();
+      });
+    });
+  }
+</script>

@@ -1,11 +1,12 @@
 {
-  "name": "language-subtag-registry",
+  "name": "@webplatformco/project-language-styling",
   "version": "1.0.0",
-  "description": "IANA Language Subtag Registry viewer built with 11ty",
+  "description": "Collaborative data collection regarding best practices for styling websites.",
+  "type": "module",
   "scripts": {
-    "build": "eleventy",
-    "start": "eleventy --serve",
-    "fetch-data": "node scripts/fetch-data.js"
+    "clean": "rm -rf _site",
+    "build": "yarn clean && eleventy",
+    "start": "eleventy --serve"
   },
   "keywords": [
     "iana",
@@ -14,9 +15,17 @@
     "registry",
     "11ty"
   ],
-  "author": "",
+  "author": "Cassondra Roberts",
   "license": "MIT",
   "devDependencies": {
-    "@11ty/eleventy": "^3.0.0"
-  }
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-fetch": "^5.1.1",
+    "@11ty/font-awesome": "^1.0.0",
+    "@patternfly/patternfly": "^6.4.0",
+    "smart-webcomponents": "^25.0.1"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

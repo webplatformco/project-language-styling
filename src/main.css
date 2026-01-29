@@ -1,0 +1,105 @@
+:root {
+    --accent: hsl(202, 55%, 47%);
+    --text: hsl(40, 12.00%, 20%);
+    --background: hsl(40, 12%, 96%);
+
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    scroll-snap-align: start;
+}
+
+body {
+    font-family: var(--font-family);
+    font-optical-sizing: auto;
+    color: var(--text);
+    background-color: var(--background);
+    line-height: 1.18;
+    padding: 2rem;
+    margin: 0 auto;
+}
+
+/* Stylized highlight for selected text */
+::selection {
+    background: color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 0.25rem;
+    color: black;
+}
+
+:is(h1, h2, h3, h4, h5, h6) {
+    margin-block-end: 1.5rem;
+}
+
+p {
+    max-inline-size: 80ch;
+}
+
+/* Defaults for links */
+a {
+    color: var(--text);
+
+    &:focus-visible {
+        outline: 2px solid LinkText;
+        outline-offset: 2px;
+    }
+}
+
+:is(b, strong) {
+    font-weight: 600;
+}
+
+section {
+    margin-bottom: 2rem;
+    scroll-snap-align: start;
+    scroll-margin-block-start: 2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+th,
+td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.smart-badge {
+    background-color: var(--smart-badge-color, var(--accent));
+    color: white;
+}
